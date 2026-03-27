@@ -1,9 +1,12 @@
 #출력을 JSON 포맷으로 보내야하는데 그 것을 여기서 정의 할 것
 #데이터의 형태를 지정할 것
+# 그냥 리포트를 만들라고 하는 것 보다 이렇게 형태를 지정하는 것이 훨씬 성능좋음
+
 from typing import List
 from pydantic import BaseModel
 
 class Job(BaseModel):
+    
     job_title: str
     company_name: str
     job_location: str

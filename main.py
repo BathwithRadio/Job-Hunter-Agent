@@ -54,7 +54,11 @@ class JobHunterCrew:
     @task
     def resume_rewriting_task(self):
         return Task(
-            config=self.tasks_config['resume_rewriting_task']
+            config=self.tasks_config['resume_rewriting_task'],
+            context=[
+                self.job_selection_task(),
+                
+            ]
         )
     
     @task
