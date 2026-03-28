@@ -1,12 +1,18 @@
 import dotenv
 
-from models import ChosenJob, JobList, RankedJobList
-
 dotenv.load_dotenv()
 
+from models import ChosenJob, JobList, RankedJobList
 from crewai import Crew, Agent, Task
+from crewai.knowledge.source.text_file_knowledge_source import TextFileKnowledgeSource
 from crewai.project import CrewBase, task, agent, crew
 from tools import web_search_tool
+
+resume_knowlege = TextFileKnowledgeSource(
+    file_paths=[
+        "resume.txt"
+    ]
+)
 
 @CrewBase
 class JobHunterCrew:
@@ -20,22 +26,27 @@ class JobHunterCrew:
     @agent
     def job_matching_agent(self):
         return Agent(
-            config=self.agents_config['job_matching_agent']
+            config=self.agents_config['job_matching_agent'],
+            knowlege_sources = [resume_knowlege],
         )
     @agent
     def resume_optimization_agent(self):
         return Agent(
-            config=self.agents_config['resume_optimization_agent']
+            config=self.agents_config['resume_optimization_agent'],
+            knowlege_sources = [resume_knowlege],
         )
     @agent
     def company_research_agent(self):
         return Agent(
-            config=self.agents_config['company_research_agent']
+            config=self.agents_config['company_research_agent'],
+            knowlege_sources = [resume_knowlege],
+            tools=[web_search_tool],
         )
     @agent
     def interview_prep_agent(self):
         return Agent(
-            config=self.agents_config['interview_prep_agent']
+            config=self.agents_config['interview_prep_agent'],
+            knowlege_sources = [resume_knowlege],
         )
     
     @task
@@ -72,10 +83,8 @@ class JobHunterCrew:
     def company_research_task(self):
         return Task(
             config=self.tasks_config['company_research_task'],
-            context=[
-                self.job_selection_task(),
-                
-            ]
+            context=[self.job_selection_task()],
+            tools=[web_search_tool],
         )
     @task
     def interview_prep_task(self):
@@ -96,5 +105,14 @@ class JobHunterCrew:
             verbose=True,
         )
 
-JobHunterCrew().crew().kickoff()
-       
+result = JobHunterCrew().crew().kickoff(
+    inputs={
+        'level' : 'Senior',
+        'position' : 'FW Developer',
+        'location' : 'Singapore'
+    }
+)
+
+
+for task_output in result.tasks_output:
+    print(task_output.pydantic)

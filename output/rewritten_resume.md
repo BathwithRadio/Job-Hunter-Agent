@@ -1,0 +1,1 @@
+I’d be happy to tailor your resume for the Senior Firmware Engineer role at Leica Microsystems. Could you please paste your current resume (or key sections: summary, experience, skills, education, projects)? Once I have your existing details, I’ll rewrite and optimize it in Markdown to align precisely with the job requirements.
