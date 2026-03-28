@@ -2,6 +2,7 @@
 #데이터의 형태를 지정할 것
 # 그냥 리포트를 만들라고 하는 것 보다 이렇게 형태를 지정하는 것이 훨씬 성능좋음
 
+from datetime import date
 from typing import List
 from pydantic import BaseModel
 
@@ -39,3 +40,16 @@ class JobList(BaseModel):
 # {
 # 'jobs':[{position: 'xxx, location: 'xxx', is_remote: TRUE}]
 # }
+
+class RankedJob(BaseModel):
+    job: Job
+    match_score: int
+    reason: str
+
+class RankedJobList(BaseModel):
+    ranked_jobs: List[RankedJob]
+
+class ChosenJob(BaseModel):
+    job :Job
+    selected: bool
+    reason: str
